@@ -24,7 +24,7 @@ contract MissPH is ERC721, ERC721URIStorage, Pausable, Ownable {
     // Max total supply of NFTs
     uint256 public constant MAX_NFT = 10000;
     // NFTs sale's currency
-    IERC20 public RFOX;
+    IERC20 public immutable RFOX;
     // The token id tracker
     Counters.Counter private _tokenIdCounter;
     // NFTs can not min exceed MAX_NFT
@@ -48,7 +48,7 @@ contract MissPH is ERC721, ERC721URIStorage, Pausable, Ownable {
 
     /// @dev Only owner can migrate base URI
     /// @param baseURIPrefix string prefix of start URI
-    function setBaseURI(string memory baseURIPrefix) public onlyOwner {
+    function setBaseURI(string memory baseURIPrefix) external onlyOwner {
         _baseURIPrefix = baseURIPrefix;
     }
 
@@ -58,18 +58,18 @@ contract MissPH is ERC721, ERC721URIStorage, Pausable, Ownable {
 
     /// @dev Owner can safe mint to address
     /// @param to Address of receiver
-    function safeMint(address to) public onlyOwner tokenInSupply {
+    function safeMint(address to) external onlyOwner tokenInSupply {
         _safeMint(to, _tokenIdCounter.current());
         _tokenIdCounter.increment();
     }
 
     /// @dev Owner can pause the contract in emergency
-    function pause() public onlyOwner {
+    function pause() external onlyOwner {
         _pause();
     }
 
     /// @dev Owner can unpause the contract in emergency
-    function unpause() public onlyOwner {
+    function unpause() external onlyOwner {
         _unpause();
     }
 
@@ -100,7 +100,7 @@ contract MissPH is ERC721, ERC721URIStorage, Pausable, Ownable {
     }
 
     /// @notice Owner withdraw revenue from Sales
-    function withdraw() public onlyOwner {
+    function withdraw() external onlyOwner {
         uint256 balance = RFOX.balanceOf(address(this));
         RFOX.safeTransfer(msg.sender, balance);
     }
@@ -108,14 +108,14 @@ contract MissPH is ERC721, ERC721URIStorage, Pausable, Ownable {
     /// @dev Emergency function for direct mint for users
     /// @param to Address of receiver
     /// @param tokenId Which token ID
-    function directMint(address to, uint256 tokenId) public onlyOwner {
+    function directMint(address to, uint256 tokenId) external onlyOwner {
         _safeMint(to, tokenId);
     }
 
     /// @notice Function that allow user to buy NFTs
     /// @dev Multiple purchase are allowed
     /// @param tokensNumber How many NFTs for buying this round
-    function buyNFTs(uint256 tokensNumber) public whenNotPaused {
+    function buyNFTs(uint256 tokensNumber) external whenNotPaused {
         require(
             tokensNumber <= maxTokensPerTransaction,
             "Max purchase per one transaction exceeded"

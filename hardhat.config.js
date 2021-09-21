@@ -57,7 +57,7 @@ module.exports = {
   networks: {
     mainnet: {
       url: `https://mainnet.infura.io/v3/${infuraKey}`,
-      accounts,
+      accounts: [privateKey],
     },
     testnet: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
